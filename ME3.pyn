@@ -1,0 +1,83 @@
+# Install required packages
+!pip install -q spacy scikit-learn
+!python -m spacy download en_core_web_sm
+
+# Import libraries
+import spacy
+import random
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load SpaCy NLP model
+nlp = spacy.load("en_core_web_sm")
+
+# Knowledge base (only coding & AI-related)
+corpus = [
+    "Python is a popular programming language used for web development, data analysis, AI, and automation.",
+    "Python is known for its readability and simplicity.",
+    "Python was created by Guido van Rossum and released in 1991.",
+    "Python supports multiple programming paradigms, including procedural, object-oriented, and functional programming.",
+    "NLP stands for Natural Language Processing, a field of AI that focuses on understanding human language.",
+    "NLP is used in chatbots, translation apps, sentiment analysis, and more.",
+    "Chatbots are software applications that simulate conversation with users.",
+    "Chatbots work by processing user input and generating appropriate responses.",
+    "Rule-based chatbots follow fixed scripts while AI-powered ones learn from data.",
+    "The main purpose of chatbots is to assist users and provide quick information.",
+    "I can help you learn about Python, NLP, and how chatbots work.",
+    "Ask me anything related to Python programming or artificial intelligence.",
+    "You're welcome. I'm always here to help.",
+    "Goodbye. It was nice chatting with you.",
+]
+
+# Greetings and fallback responses
+GREETING_INPUTS = ("hello", "hi", "hey", "greetings", "yo")
+GREETING_RESPONSES = [
+    "Hi there! How can I help?",
+    "Hello! What would you like to ask?",
+    "Hey! Ask me anything about Python or AI.",
+]
+
+FALLBACK_RESPONSES = [
+    "I'm not sure about that. Can you ask in a different way?",
+    "Sorry, I don't have that info. Try rephrasing your question?",
+    "I didn’t get that fully. Could you clarify?",
+]
+
+# Vectorize corpus
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(corpus)
+
+# Generate response based on user input
+def get_chatbot_response(user_input):
+    input_vec = vectorizer.transform([user_input])
+    sim_scores = cosine_similarity(input_vec, X)
+    max_score = sim_scores.max()
+    if max_score < 0.3:
+        return random.choice(FALLBACK_RESPONSES)
+    else:
+        index = sim_scores.argmax()
+        return corpus[index]
+
+# Check for greetings
+def is_greeting(text):
+    for word in text.lower().split():
+        if word in GREETING_INPUTS:
+            return random.choice(GREETING_RESPONSES)
+    return None
+
+# Main chat loop
+def chat():
+    print("Chatbot: Hi! Ask me anything about Python or AI. (Type 'bye' to exit.)")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["bye", "exit", "quit"]:
+            print("Chatbot: Goodbye!")
+            break
+        response = is_greeting(user_input)
+        if response:
+            print("Chatbot:", response)
+        else:
+            print("Chatbot:", get_chatbot_response(user_input))
+
+# Run the chatbot
+chat()
