@@ -78,9 +78,8 @@ While not production‑grade, this notebook is perfect for:
 
 Classroom demos on vector‑space retrieval and hybrid rule‑based systems.
 
-![Image](https://github.com/user-attachments/assets/a87224e7-0891-4f3c-a449-2a99cc211b81)
-
 Rapid prototyping of FAQ bots when data is scarce but domain boundaries are clear.
 
 Self‑study exercises: students can tweak similarity thresholds, add intents, or experiment with alternative vectorizers.
 
+![Image](https://github.com/user-attachments/assets/a87224e7-0891-4f3c-a449-2a99cc211b81)
